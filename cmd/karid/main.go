@@ -3,22 +3,15 @@ package main
 import (
 	"os"
 
-	"github.com/cosmos/cosmos-sdk/server"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 
-	"kari/app"
-	"kari/cmd/karid/cmd"
+	kariapp "github.com/Kanari-Netwrok/kari/app"
 )
 
 func main() {
-	rootCmd, _ := cmd.NewRootCmd()
-	if err := svrcmd.Execute(rootCmd, "", app.DefaultNodeHome); err != nil {
-		switch e := err.(type) {
-		case server.ErrorCode:
-			os.Exit(e.Code)
-
-		default:
-			os.Exit(1)
-		}
+	setAddressPrefixes(kariapp.AccountAddressPrefix)
+	rootCmd := NewRootCmd(kariapp.MakeEncodingConfig())
+	if err := svrcmd.Execute(rootCmd, "Kari", kariapp.DefaultNodeHome); err != nil {
+		os.Exit(1)
 	}
 }
